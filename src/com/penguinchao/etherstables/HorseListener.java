@@ -1,10 +1,12 @@
 package com.penguinchao.etherstables;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -88,8 +90,59 @@ public class HorseListener implements Listener {
 				event.setCancelled(true);
 			}
 		}
+	}@EventHandler (priority = EventPriority.MONITOR)
+	public void onHorseCancel(CreatureSpawnEvent event){
+		main.debugTrace("[onHorseCancel]");
+		if(event.getEntity() instanceof Horse){
+			//Entity is a Horse
+			main.debugTrace("[onHorseCancel] Entity is a horse");
+		}else{
+			//Not a horse
+			main.debugTrace("[onHorseCancel] Entity is not a horse. Done");
+			return;
+		}
+		if(event.getSpawnReason() == SpawnReason.CUSTOM){
+			//Horse was spawned by plugin
+			main.debugTrace("[onHorseCancel] Horse was spawned by a plugin");
+		}else{
+			//Not spawned by this plugin
+			main.debugTrace("[onHorseCancel] Horse was spawned by a non-plugin source. Done");
+			return;
+		}
+		if(event.isCancelled()){
+			//Event is Cancelled
+			main.debugTrace("[onHorseCancel] Event was cancelled");
+		}else{
+			//Event was not cancelled
+			main.debugTrace("[onHorseCancel] Event was not cancelled. Done");
+			return;
+		}
+		Horse horse = (Horse) event.getEntity();
+		if(HorseUtilities.getHorseOwner(horse) != null){
+			//Horse is owned
+			main.debugTrace("[onHorseCancel] Horse is owned");
+		}else{
+			//Horse is not owned
+			main.debugTrace("[onHorseCancel] Horse was not owned. Done");
+			return;
+		}
+		main.debugTrace("[onHorseCancel] Getting player");
+		Player player = Bukkit.getPlayer(HorseUtilities.getHorseOwner(horse));
+		main.debugTrace("[onHorseCancel] Getting ItemStack");
+		ItemStack item = main.horseManager.scoopHorse(horse, false);
+		main.debugTrace("[onHorseCancel] Adding item to player");
+		if(player == null){
+			//Player is null
+			main.debugTrace("[onHorseCancel] Player is null. Dropping instead.");
+			horse.getWorld().dropItem(horse.getLocation(), item);
+		}else{
+			//Player is not null
+			HorseUtilities.softAddItem(item, player);
+			main.debugTrace("[onHorseCancel] Done");
+		}
+		
 	}
-	@EventHandler
+	@EventHandler (priority = EventPriority.HIGH)
 	public void onEggUse(CreatureSpawnEvent event){ //Egg Listener to spawn
 		//Check if spawned entity is a horse
 		if(event.getEntity() instanceof Horse){
