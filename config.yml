@@ -1,0 +1,11 @@
+#Debug Logging?
+debug-mode: false
+#Should a horse's jump strength be truncated to look better?
+truncate-stats: true
+truncate-precision: 3
+#Should a player's horses be scooped up when a horse is placed?
+single-horse-mode: true
+messages:
+  horse-owned: That horse already belongs to someone else.
+  no-inv-access: You cannot open another person's horse.
+  all-horses-scooped: Returning your other horses to your inventory.

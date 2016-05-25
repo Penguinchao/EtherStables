@@ -1,0 +1,12 @@
+main: com.penguinchao.etherstables.EtherStables
+version: 1.0
+name: EtherStables
+author: Penguinchao
+permissions:
+    etherstables.collect: #Allows the collection of wild horses
+        default: true
+#depend: [Vault]
+#commands:
+#    etherstables:
+#        description: Admin command for EtherMarket
+#        aliases: [em]
