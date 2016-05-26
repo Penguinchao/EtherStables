@@ -75,6 +75,7 @@ public class HorseListener implements Listener {
 		//Prevent horse death
 		if(event.getEntity() instanceof Horse){
 			Horse horse = (Horse) event.getEntity();
+			//TODO Add horse to owner's inventory if online
 			if(HorseUtilities.getHorseOwner(horse) != null){
 				main.debugTrace("[onHorseDeath] An owned horse died. Dropping it as an egg");
 				horse.getWorld().dropItem(horse.getLocation(), main.horseManager.scoopHorse(horse, true));
@@ -90,7 +91,8 @@ public class HorseListener implements Listener {
 				event.setCancelled(true);
 			}
 		}
-	}@EventHandler (priority = EventPriority.MONITOR)
+	}
+	@EventHandler (priority = EventPriority.MONITOR)
 	public void onHorseCancel(CreatureSpawnEvent event){
 		main.debugTrace("[onHorseCancel]");
 		if(event.getEntity() instanceof Horse){
@@ -114,8 +116,15 @@ public class HorseListener implements Listener {
 			main.debugTrace("[onHorseCancel] Event was cancelled");
 		}else{
 			//Event was not cancelled
-			main.debugTrace("[onHorseCancel] Event was not cancelled. Done");
-			return;
+			main.debugTrace("[onHorseCancel] Event was not cancelled.");
+			if(event.getEntity().isDead()){
+				//Horse was flagged for removal
+				main.debugTrace("[onHorseCancel] However, the Horse was flagged for removal.");
+			}else{
+				//Horse was not flagged for removal
+				main.debugTrace("[onHorseCancel] Horse was not flagged for removal. Done");
+				return;
+			}
 		}
 		Horse horse = (Horse) event.getEntity();
 		if(HorseUtilities.getHorseOwner(horse) != null){
@@ -146,7 +155,7 @@ public class HorseListener implements Listener {
 	public void onEggUse(CreatureSpawnEvent event){ //Egg Listener to spawn
 		//Check if spawned entity is a horse
 		if(event.getEntity() instanceof Horse){
-			main.debugTrace("[CreatureSpawnEvent] A horse was spawned");
+			main.debugTrace("[onEggUse] A horse was spawned");
 			//Entity is a horse
 		}else{
 			//Not a horse
@@ -155,13 +164,13 @@ public class HorseListener implements Listener {
 		//Check if spawned from an egg
 		if(event.getSpawnReason() == SpawnReason.SPAWNER_EGG ){
 			//Entity was spawned from an egg
-			main.debugTrace("[CreatureSpawnEvent] A horse was spawned through an egg - preventing");
+			main.debugTrace("[onEggUse] A horse was spawned through an egg - preventing");
 			event.getEntity().remove();
 			event.setCancelled(true);
 			return;
 		}else{
 			//Not spawned from an egg
-			main.debugTrace("[CreatureSpawnEvent] A horse was spawned through a non egg - allowing");
+			main.debugTrace("[onEggUse] A horse was spawned through a non egg - allowing");
 			return;
 		}
 	}
@@ -170,24 +179,24 @@ public class HorseListener implements Listener {
 		//Check if is a horse egg
 		if(event.getPlayer().getItemInHand() == null){
 			//Nothing in hand
-			main.debugTrace("[PlayerInteractEvent] Nothing in hand");
+			main.debugTrace("[onHorsePlace] Nothing in hand");
 			return;
 		}else if(event.getPlayer().getItemInHand().getType() != Material.MONSTER_EGG){
 			//Not a spawner egg
-			main.debugTrace("[PlayerInteractEvent] Not a spawner egg");
+			main.debugTrace("[onHorsePlace] Not a spawner egg");
 			return;
 		}else if(event.getPlayer().getItemInHand().getDurability() != 100){
 			//Not a horse egg
-			main.debugTrace("[PlayerInteractEvent] Not a horse egg");
+			main.debugTrace("[onHorsePlace] Not a horse egg");
 			return;
 		}else{
-			main.debugTrace("[PlayerInteractEvent] Item is a horse egg");
+			main.debugTrace("[onHorsePlace] Item is a horse egg");
 		}
 		//Check action
 		if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-			main.debugTrace("[PlayerInteractEvent] "+event.getAction().toString());
+			main.debugTrace("[onHorsePlace] "+event.getAction().toString());
 		}else{
-			main.debugTrace("[PlayerInteractEvent] "+event.getAction().toString());
+			main.debugTrace("[onHorsePlace] "+event.getAction().toString());
 			return;
 		}
 		//Check for other horses

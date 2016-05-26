@@ -174,11 +174,16 @@ public class HorseManager {
 	}
 	protected Horse spawnHorseFromItem(ItemStack item, Player player){
 		main.debugTrace("[spawnHorseFromItem] Spawning Entity");
-		Horse horse = (Horse) player.getWorld().spawnEntity(player.getLocation(), EntityType.HORSE);
+		Horse horse = (Horse) player.getWorld().spawnCreature(player.getLocation(), EntityType.HORSE);
+		//Set Ownership
+		main.debugTrace("[spawnHorseFromItem] Setting ownership");
+		horse.setTamed(true);
+		AnimalTamer tamer = (AnimalTamer) player;
+		horse.setOwner(tamer);
 		main.debugTrace("[spawnHorseFromItem] Getting Item Meta");
 		ItemMeta meta = item.getItemMeta();
 		if(meta == null){
-			main.debugTrace("Meta is null. Returning Random");
+			main.debugTrace("[spawnHorseFromItem] Meta is null. Returning Random. Done");
 			return horse;
 		}
 		//Lookup horse entity from egg - return random horse if not found
@@ -241,11 +246,7 @@ public class HorseManager {
 				}
 			}
 		}
-		//Set Ownership
-		main.debugTrace("[spawnHorseFromItem] Setting ownership");
-		horse.setTamed(true);
-		AnimalTamer tamer = (AnimalTamer) player;
-		horse.setOwner(tamer);
+		main.debugTrace("[spawnHorseFromItem] Done");
 		return horse;
 	}
 	public void scoopOtherHorses(Player player){
