@@ -20,7 +20,7 @@ public class HorseUtilities {
 	}
 	public static double truncateDouble(double currentNum, int decimalPlaces){
 		BigDecimal bd = new BigDecimal(currentNum);
-		bd = bd.setScale(decimalPlaces, BigDecimal.ROUND_FLOOR);
+		bd = bd.setScale(decimalPlaces, BigDecimal.ROUND_HALF_EVEN);
 		return bd.doubleValue();
 	}
 	public static UUID getHorseOwner(Horse horse){ //Get the owner of a placed horse
