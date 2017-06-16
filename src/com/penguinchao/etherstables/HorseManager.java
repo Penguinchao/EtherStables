@@ -174,7 +174,7 @@ public class HorseManager {
 	}
 	protected Horse spawnHorseFromItem(ItemStack item, Player player){
 		main.debugTrace("[spawnHorseFromItem] Spawning Entity");
-		Horse horse = (Horse) player.getWorld().spawnCreature(player.getLocation(), EntityType.HORSE);
+		Horse horse = (Horse) player.getWorld().spawnEntity(player.getLocation(), EntityType.HORSE);
 		//Set Ownership
 		main.debugTrace("[spawnHorseFromItem] Setting ownership");
 		horse.setTamed(true);
